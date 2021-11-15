@@ -33,7 +33,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="success" @click="submitForm('form')"> Отправить </el-button>
+                    <el-button type="success" :disabled="!formReady" @click="submitForm('form')"> Отправить </el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -75,12 +75,25 @@ export default {
         },
 
         submitForm(formName) {
-            this.$refs[formName].validate((valid) => (valid ? alert('Сообщение доставлено!') : ''));
-            this.resetForm(formName);
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    alert('Сообщение доставлено!');
+                } else {
+                    return false;
+                }
+
+                this.resetForm(formName);
+            });
         },
 
         resetForm(formName) {
             this.$refs[formName].resetFields();
+        },
+    },
+
+    computed: {
+        formReady() {
+            return Object.values(this.form).every((value) => value !== '');
         },
     },
 };
